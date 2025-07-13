@@ -1,0 +1,121 @@
+#include "pipex.h"
+
+void	init_pipe(t_pipex *px, int i);
+int		init_fork(t_pipex *px, int i);
+void	pipeline(t_pipex *px);
+
+
+int	main(int ac, char **av, char **ep)
+{
+	t_pipex	*px;
+
+	px = init_px(ac, av, ep);
+	pipeline(px);
+	exit_success(px);
+}
+
+void	pipeline(t_pipex *px)
+{
+	int	in_fd;
+	int	out_fd;
+	int	prev_read_fd;
+	int	i;
+	int	pid;
+
+	in_fd = ft_open(px, 'i');
+	if (in_fd == -1)
+		exit_fail(px, "File doesn't exist");
+	out_fd = ft_open(px, 'o'); // open/create out_file
+	if (out_fd == -1)
+		exit_fail(px, "Couldn't create output file");
+	prev_read_fd = -1;
+	i = 0;
+	while (i < px->nr_cmds)
+	{
+		init_pipe(px, i);
+		pid = init_fork(px, i);
+		if (pid == 0) // Child
+		{
+			// Input
+			if (i == 0) // First command
+			{
+				if (px->debug)
+					printf("[C%d] INPUT:\n", i);
+				ft_dup2(in_fd, STDIN_FILENO, px, i);
+			}
+			else // Command that receives/reads from pipe
+			{
+				if (px->debug)
+					printf("[C%d] INPUT:\n", i);
+				ft_dup2(prev_read_fd, STDIN_FILENO, px, i);
+				ft_close(prev_read_fd, px, i);
+			}
+			// Output
+			if (i == px->nr_cmds - 1) // Last command
+			{
+				if (px->debug)
+					printf("[C%d] OUTPUT:\n", i);
+				ft_dup2(out_fd, STDOUT_FILENO, px, i);
+			}
+			else // Command that sends/writes to pipe
+			{
+				if (px->debug)
+					printf("[C%d] OUTPUT:\n", i);
+				if (px->debug)
+					printf("[C%d] closed: px->fd[1]: %d\n", i, px->fd[1]);
+				ft_close(px->fd[0], px, i);
+				ft_dup2(px->fd[1], STDOUT_FILENO, px, i);
+				ft_close(px->fd[1], px, i);
+			}
+			ft_close(in_fd, px, i);
+			ft_close(out_fd, px, i);
+			execve(px->cmds[i][0], px->cmds[i], NULL);
+			exit_fail(px, "execve failed");
+		}
+		if (i > 0)
+		{
+			ft_close(prev_read_fd, px, i);
+			prev_read_fd = px->fd[0];
+			if (px->debug)
+				printf("[P] prev_read_fd is now: %d\n", prev_read_fd);
+		}
+		if (i < px->nr_cmds - 1)
+		{
+			prev_read_fd = px->fd[0];
+			ft_close(px->fd[1], px, i);
+			if (px->debug)
+				printf("[P] prev_read_fd is now: %d\n", prev_read_fd);
+		}
+//		sleep(1);
+		i++;
+	}
+	ft_close(in_fd, px, i);
+	ft_close(out_fd, px, i);
+	i = -1;
+	while (++i < px->nr_cmds)
+		wait(NULL);
+}
+
+void	init_pipe(t_pipex *px, int i)
+{
+	if (i < px->nr_cmds - 1)
+	{
+		if (pipe(px->fd) == -1)
+			exit_fail(px, "pipe");
+		if (px->debug == 1)
+			printf("[P] Init pipe %d:\n\tfd[0]: %d\n\tfd[1]: %d\n", i, px->fd[0], px->fd[1]);
+	}
+}
+
+int	init_fork(t_pipex *px, int i)
+{
+	int	pid;
+
+	pid = fork();
+	if (pid == -1)
+		exit_fail(px, "fork");
+	if (px->debug == 1)
+		printf("[P] Forking child %d\n", i);
+
+	return (pid);
+}

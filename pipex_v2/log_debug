@@ -1,0 +1,26 @@
+[P] opened: in_fd: 4
+[P] opened: out_fd: 5
+[P] Init pipe 0:
+	fd[0]: 6
+	fd[1]: 7
+[P] Forking child 0
+[P] closed: fd = 7
+[P] prev_read_fd is now: 6
+[P] Forking child 1
+[C0] INPUT:
+[C0] Redirected 0 to 4
+[C0] OUTPUT:
+[C0] Redirected 1 to 7
+[C0] closed: fd = 6
+[C0] closed: fd = 7
+[C0] closed: fd = 4
+[C0] closed: fd = 5
+[P] closed: fd = 4
+[P] closed: fd = 5
+[C1] INPUT:
+[C1] Redirected 0 to 6
+[C1] OUTPUT:
+[C1] Redirected 1 to 5
+[C1] closed: fd = 6
+[C1] closed: fd = 4
+[C1] closed: fd = 5
