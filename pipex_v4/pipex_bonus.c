@@ -44,8 +44,10 @@ void	pipeline(t_pipex px, char **av, char **ep, int i)
 	}
 	else
 	{
-		close(px.fd[0]);
-		close(px.fd[1]);
+		if (i == 0)
+			close(px.fd[1]);
+		else if (i == px.nr_cmds - 1)
+			close(px.fd[0]);
 	}
 }
 
@@ -55,6 +57,7 @@ void	middle_cmd(t_pipex px, char **av, char **ep, int i)
 	close(px.fd[0]);
 	dup2(px.fd[1], STDOUT_FILENO);
 	close(px.fd[1]);
+	px.prev_fd = px.fd[0];
 	exec_cmd(px, av, ep, i);
 }
 
@@ -63,6 +66,7 @@ void	first_cmd(t_pipex px, char **av, char **ep, int i)
 	int		in_fd;
 
 	in_fd = get_input(px, av, ep);
+	px.prev_fd = px.fd[0];
 	close(px.fd[0]);
 	dup2(in_fd, STDIN_FILENO);
 	close(in_fd);

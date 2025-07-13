@@ -15,6 +15,7 @@ typedef struct	s_pipex
 	int	nr_cmds;
 	int	here_d;
 	int	fd[2];
+	int	prev_fd;
 }				t_pipex;
 
 void	pipeline(t_pipex px, char **av, char **ep, int i);
