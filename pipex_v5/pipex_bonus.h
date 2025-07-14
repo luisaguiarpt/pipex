@@ -4,31 +4,36 @@
 # include "libft/libft/libft.h"
 # include "libft/get_next_line/get_next_line.h"
 # include "libft/ft_printf/includes/ft_printf.h"
-# include <unistd.h>	// pipe, fork, execve, dup, read, close, access
-# include <fcntl.h>		// open
-# include <stdlib.h>	// malloc, exit
-# include <stdio.h>		// perror
-# include <sys/wait.h>	// wait
+# include <unistd.h>
+# include <fcntl.h>	
+# include <stdlib.h>
+# include <stdio.h>
+# include <sys/wait.h>
 
-typedef struct	s_pipex
+typedef struct s_pipex
 {
 	int	nr_cmds;
 	int	here_d;
 	int	fd[2];
 	int	prev_fd;
 	int	out_fd;
+	int	in_fd;
+	int	last_pid;
+	int	last_status;
 }				t_pipex;
 
+// Main functions - pipex_bonus.c
 void	pipeline(t_pipex *px, char **av, char **ep, int i);
+void	init_pipex(t_pipex *px, int ac, char **av);
 void	exec_cmd(t_pipex *px, char **av, char **ep, int i);
-void	middle_cmd(t_pipex *px, char **ac, char **ep, int i);
-void	first_cmd(t_pipex *px, char **av, char **ep, int i);
-void	last_cmd(t_pipex *px, char **av, char **ep, int i);
+void	exec_child(t_pipex *px, char **av, char **ep, int i);
+// Utility function - utils_bonus.c
 int		get_input(t_pipex *px, char **av, char **ep);
 int		get_output(t_pipex *px, char **av, char **ep);
 int		here_doc(char **av);
 char	*get_ep(char *var, char **ep);
 char	*get_path(char *av_cmd, char **ep);
-void	ft_exit(int	err);
+// Exit function - exit.c
+void	ft_exit(int err);
 
 #endif
