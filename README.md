@@ -93,6 +93,6 @@ Still in the parent process, but outside the loop, after having forked child pro
 
 I did this way and was able to replicate the way the shell functions in every way, I could remember (output, errors, run time, and no leaks)
 
-[^1]: The reason why we need to open the input and output files inside the child process is twofold:
-- One is that, if the open fails, the sub-process finishes, but this doesn't mean that the whole sequence of piped commands fails, it just means that the pipe that is expecting output from the failed command process, will be empty on the other end, and the following programs can continue executing, which is what the shell does;
-- Second is that the shell sets the variable $? to the exit status of the last command, and to do this, we need to be able to possibly get the failed exit status of the last command.
+[^1]: The reason why we need to open the input and output files inside the child process is twofold: 
+One is that, if the open fails, the sub-process finishes, but this doesn't mean that the whole sequence of piped commands fails, it just means that the pipe that is expecting output from the failed command process, will be empty on the other end, and the following programs can continue executing, which is what the shell does;
+Second is that the shell sets the variable $? to the exit status of the last command, and to do this, we need to be able to possibly get the failed exit status of the last command.
