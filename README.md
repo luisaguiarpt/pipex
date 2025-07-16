@@ -20,7 +20,7 @@ In order to mimic the functioning of a pipe in the shell, it's important to unde
 This is an explanation of the bonus part of the project, since it encompasses the mandatory part as well.
 
 ## Important notions:
-A command takes an input and returns an output. The commands we use in the shell wait for input through the Standard Input (stdin **fd** = 0), output the result to the Standard Output (stdout **fd** = 1) and any errors to Standard Error (stderr **fd** = 2).
+A command takes an input and returns an output. The commands we use in the shell receive input through the Standard Input (stdin **fd** = 0), output the result to the Standard Output (stdout **fd** = 1) and any errors to Standard Error (stderr **fd** = 2).
 
 A pipe is a undirectional communication channel, that gets written to on one end (write-end fd[1]) and is read on the other end (fd[0]). Something important to note is that a pipe works more like a shipping container in practice, the data isn't constantly flowing from one end to the other, it is stored there after getting written, up until it's read, after which it is gone. It is actually a buffer that exists on the kernel level, so if a pipe gets more data written into it than it has capacity to store, it will block until the data gets read on the other end, after which it will allow more data to be written. (This will prove handy later on, when addressing how data is transferred from one sub-process to another).
 
@@ -93,6 +93,6 @@ Still in the parent process, but outside the loop, after having forked child pro
 
 I did this way and was able to replicate the way the shell functions in every way, I could remember (output, errors, run time, and no leaks)
 
-[^1] The reason why we need to open the input and output files inside the child process is twofold:
+[^1]: The reason why we need to open the input and output files inside the child process is twofold:
 - One is that, if the open fails, the sub-process finishes, but this doesn't mean that the whole sequence of piped commands fails, it just means that the pipe that is expecting output from the failed command process, will be empty on the other end, and the following programs can continue executing, which is what the shell does;
 - Second is that the shell sets the variable $? to the exit status of the last command, and to do this, we need to be able to possibly get the failed exit status of the last command.
