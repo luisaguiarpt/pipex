@@ -8,7 +8,9 @@ This is an explanation of the bonus part of the project, since it encompasses th
 
 ## Important notions:
 A command takes an input and returns an output. The commands we use in the shell wait for input through the Standard Input (stdin fd = 0), output the result to the Standard Output (stdout fd = 1) and any errors to Standard Error (stderr fd = 2).
+
 A pipe is a undirectional communication channel, that gets written to on one end (write-end fd[1]) and is read on the other end (fd[0]). Something important to note is that a pipe works more like a shipping container in practice, the data isn't constantly flowing from one end to the other, it is stored there after getting written, up until it's read, after which it is gone. It is actually a buffer that exists on the kernel level, so if a pipe gets more data written into it than it has capacity to store, it will block until the data gets read on the other end, after which it will allow more data to be written. (This will prove handy later on, when addressing how data is transferred from one sub-process to another).
+
 A fork is a way to create a new process (child) from the calling process (parent). The child process is identical in most ways to the parent process, it is a copy of all of it's memory, running in separate memory spaces. Among some things, they have different PID (process ID).
 
 In a very concise way:
