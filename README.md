@@ -3,13 +3,16 @@ This is a 42 project which aims to simulate how a pipe works in a shell.
 
 To compile:
 `make`
+
 To compile the bonus:
 `make bonus`
+
 To run:
 `./pipex input_file "command1" ... "commandN" output_file`
+
 or (here_doc)
 `./pipex here_doc LIMITER "command1" ... "commandN" output_file`
-
+___
 
 In this project we must create different sub-processes which will execute each of the commands passed as arguments, and create pipes that will allow communication between those sub-processes.
 
