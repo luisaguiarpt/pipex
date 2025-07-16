@@ -23,6 +23,14 @@ A pipe is a undirectional communication channel, that gets written to on one end
 
 A fork is a way to create a new process (child) from the calling process (parent). The child process is identical in most ways to the parent process, it is a copy of all of it's memory, running in separate memory spaces. Among some things, they have different PID (process ID).
 
+Why do we need to fork for each command? Why can't we do it for all but one, and have the parent process execute the last command, that way the program will return the appropriate exit status, as is required to mimic the shell pipe?
+- When we create a sub-process, we need to have the parent wait (`wait()` or `waitpid()`) for the child to finish execution, otherwise the parent might reach the end of the program and finish, before the child does.
+- When the parent is waiting, it doesn't do anything else. So what happens if the amount of data that is being passed through the pipe, from the child to the parent, is bigger than the pipe buffer?
+
+Well, what happens is **nothing**... The program will stall, because the parent is waiting for the child to finish execution and the child is waiting for the pipe to be read so it can send the rest of the data it wants to send (remember that the pipe will block when it's full, until the data is read on the read-end).
+
+That's why we need to have the two sub-processes executing (writing and reading simultaneously), while the parent waits for them both. This is important and is easy to miss without tests that send a lot of data through the pipe).
+
 ### How the shell processes pipes (more or less)
 In a very concise way:
 - The shell parses the input, identifying input/output filenames, redirection and pipe operators, as well as the commands.
@@ -42,6 +50,7 @@ In order to mimic this behaviour, we'll have to adapt a bit, but it should all f
 
 ### How I mimic'd the pipe
 1. Parsing
+
 First, we need to parse the input.
 
 In our program, we don't have a pipe or redirection operators, we know that the 1st argument is the input file, the 2nd argument is the first command, the 3rd argument is the second command, and so on, and that the last argument is the output file.
@@ -51,6 +60,7 @@ These are all shifted one position forward if the 1st argument is "here_doc".
 Since we know what we're expecting, the parsing is straight-forward, we only need to check to see wether it's a here_doc or not, but I'll leave this to end.
 
 2. "Pipeline" loop
+
 Since we have an undetermined number of commands, it's important to be able to adapt.
 
 We first declare a variable **prev_read_fd** and initialize it to -1.
