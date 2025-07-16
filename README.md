@@ -1,6 +1,16 @@
 # pipex
 This is a 42 project which aims to simulate how a pipe works in a shell.
 
+To compile:
+`make`
+To compile the bonus:
+`make bonus`
+To run:
+`./pipex input_file "command1" ... "commandN" output_file`
+or (here_doc)
+`./pipex here_doc LIMITER "command1" ... "commandN" output_file`
+
+
 In this project we must create different sub-processes which will execute each of the commands passed as arguments, and create pipes that will allow communication between those sub-processes.
 
 In order to mimic the functioning of a pipe in the shell, it's important to understand how exactly the shell operates when we pipe two or more commands/programs together.
@@ -13,6 +23,7 @@ A pipe is a undirectional communication channel, that gets written to on one end
 
 A fork is a way to create a new process (child) from the calling process (parent). The child process is identical in most ways to the parent process, it is a copy of all of it's memory, running in separate memory spaces. Among some things, they have different PID (process ID).
 
+### How the shell processes pipes (more or less)
 In a very concise way:
 - The shell parses the input, identifying input/output filenames, redirection and pipe operators, as well as the commands.
 - Within the shell, somewhere, there is a loop where:
@@ -29,19 +40,27 @@ All the while, fds that are not needed are closed and redirection occurs.
 
 In order to mimic this behaviour, we'll have to adapt a bit, but it should all flow in the same manner.
 
+### How I mimic'd the pipe
 1. Parsing
 First, we need to parse the input.
+
 In our program, we don't have a pipe or redirection operators, we know that the 1st argument is the input file, the 2nd argument is the first command, the 3rd argument is the second command, and so on, and that the last argument is the output file.
+
 These are all shifted one position forward if the 1st argument is "here_doc".
 
 Since we know what we're expecting, the parsing is straight-forward, we only need to check to see wether it's a here_doc or not, but I'll leave this to end.
 
 2. "Pipeline" loop
 Since we have an undetermined number of commands, it's important to be able to adapt.
+
 We first declare a variable **prev_read_fd** and initialize it to -1.
+
 We will loop *number of commands* times.
+
 If it's not the last command, we will create a pipe.
+
 Then we fork, creating a child process.
+
 In this child process:
 - If it's the first command, we get the input from the input file. We open the file, and use dup2 to make the Standard Input that the command receives come from the **fd** of the open input file. (This makes it so that the STDIN **fd** (0) points to the input file (e.g.: 3)) In order to avoid pipe leaks, it's important to always close **fd** that you don't intend on using, so we close the **fd** that originally pointed to the input file (3).
 - If it's not the first command, the **prev_read_fd** will have been changed to the last commands' pipe read **fd**. So we use dup2 to redirect the output of the file to the input of the command. 
