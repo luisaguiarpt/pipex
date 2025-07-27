@@ -39,7 +39,7 @@ clean:
 fclean: clean
 	make -C libft/ fclean
 	rm -rf $(NAME)
-	rm -f .bonus_stamp
+	@rm -f .bonus_stamp
 
 re: fclean all
 

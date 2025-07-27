@@ -6,7 +6,7 @@
 /*   By: ldias-da <ldias-da@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 19:13:10 by ldias-da          #+#    #+#             */
-/*   Updated: 2025/07/23 19:13:11 by ldias-da         ###   ########.fr       */
+/*   Updated: 2025/07/27 12:41:52 by ldias-da         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,22 @@ typedef struct s_pipex
 	int	out_fd;
 }				t_pipex;
 
+typedef enum e_codes
+{
+	ERR_USAGE,
+	ERR_PIPE,
+	ERR_FORK,
+	ERR_INPUT,
+	ERR_OUTPUT,
+	EXEC_FAIL,
+	CMD_NA
+}			t_codes;
+
 void	exec_cmd(char *av_cmd, char **ep);
 void	cmd1(char **av, char **ep, int fd[2]);
 void	cmd2(char **av, char **ep, int fd[2]);
 char	*get_path(char *av_cmd, char **ep);
 char	*get_ep(char *var, char **ep);
-void	exit_fail(int err);
+void	exit_fail(t_codes err);
 
 #endif

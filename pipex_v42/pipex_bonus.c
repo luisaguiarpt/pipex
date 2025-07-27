@@ -6,7 +6,7 @@
 /*   By: ldias-da <ldias-da@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 19:12:17 by ldias-da          #+#    #+#             */
-/*   Updated: 2025/07/23 19:23:27 by ldias-da         ###   ########.fr       */
+/*   Updated: 2025/07/27 12:53:07 by ldias-da         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ int	main(int ac, char **av, char **ep)
 	t_pipex	px;
 
 	if (ac < 5)
-		ft_exit(1);
+		ft_exit(USE_ERR);
 	init_pipex(&px, ac, av);
 	i = -1;
 	while (++i < px.nr_cmds)
@@ -44,10 +44,10 @@ void	pipeline(t_pipex *px, char **av, char **ep, int i)
 
 	if (i < px->nr_cmds - 1)
 		if (pipe(px->fd) == -1)
-			ft_exit(2);
+			ft_exit(PIPE_ERR);
 	pid = fork();
 	if (pid == -1)
-		ft_exit(3);
+		ft_exit(FORK_ERR);
 	else if (!pid)
 		exec_child(px, av, ep, i);
 	close(px->prev_fd);
@@ -89,14 +89,14 @@ void	exec_cmd(t_pipex *px, char **av, char **ep, int i)
 
 	cmd_i = i + 2 + px->here_d;
 	if (!ft_strlen(av[cmd_i]))
-		ft_exit(7);
+		ft_exit(CMD_NA);
 	cmd_path = get_path(av[cmd_i], ep);
 	cmds = ft_split(av[cmd_i], ' ');
 	if (execve(cmd_path, cmds, ep) == -1)
 	{
 		ft_free_tab(cmds);
 		free(cmd_path);
-		ft_exit(7);
+		ft_exit(CMDEXEC_ERR);
 	}
 }
 

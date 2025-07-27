@@ -6,7 +6,7 @@
 /*   By: ldias-da <ldias-da@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 19:55:17 by ldias-da          #+#    #+#             */
-/*   Updated: 2025/06/23 17:23:03 by ldias-da         ###   ########.fr       */
+/*   Updated: 2025/07/27 17:11:49 by ldias-da         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ size_t		ft_strlcpy(char *dst, const char *src, size_t n);
 size_t		ft_strlen(const char *str);
 int			ft_strncmp(const char *s1, const char *s2, size_t n);
 char		*ft_strmapi(char const *s, char (*f)(unsigned int, char));
+int			ft_strmatch(char *str1, char *str2);
 char		*ft_strnstr(const char *big, const char *little, size_t len);
 char		*ft_strrchr(const char *s, int c);
 char		*ft_strtrim(char const *s1, char const *set);

@@ -6,7 +6,7 @@
 /*   By: ldias-da <ldias-da@student.42porto.com>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 19:12:52 by ldias-da          #+#    #+#             */
-/*   Updated: 2025/07/23 19:30:35 by ldias-da         ###   ########.fr       */
+/*   Updated: 2025/07/27 12:54:41 by ldias-da         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ typedef struct s_pipex
 
 typedef enum e_error_code
 {
-	SUCCESS,
 	USE_ERR,
 	PIPE_ERR,
 	FORK_ERR,
@@ -44,7 +43,7 @@ typedef enum e_error_code
 	INPUT_ERR,
 	OUTPUT_ERR,
 	CMDEXEC_ERR,
-	CMDLOC_ERR
+	CMD_NA
 }				t_error_code;
 
 // Main functions - pipex_bonus.c
