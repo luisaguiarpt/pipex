@@ -21,6 +21,8 @@
 # include <stdlib.h>
 # include <stdio.h>
 # include <sys/wait.h>
+# include <errno.h>
+# include <string.h>
 
 typedef struct s_pipex
 {
@@ -60,6 +62,6 @@ char	*get_ep(char *var, char **ep);
 char	*get_path(char *av_cmd, char **ep);
 
 // Exit function - exit.c
-void	ft_exit(t_error_code err);
+void	ft_exit(t_error_code err, char *str);
 
 #endif

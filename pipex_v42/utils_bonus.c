@@ -35,7 +35,7 @@ char	*get_path(char *av_cmd, char **ep)
 	}
 	ft_free_tab(cmd);
 	ft_free_tab(paths);
-	ft_exit(CMD_NA);
+	ft_exit(CMD_NA, av_cmd);
 	return (NULL);
 }
 
@@ -68,7 +68,7 @@ int	get_output(t_pipex *px, char **av, char **ep)
 		out_fd = open(out_path, O_CREAT | O_WRONLY | O_TRUNC, 00664);
 	free(out_path);
 	if (out_fd == -1)
-		ft_exit(OUTPUT_ERR);
+		ft_exit(OUTPUT_ERR, av[px->nr_cmds + 2 + px->here_d]);
 	return (out_fd);
 }
 
@@ -85,7 +85,7 @@ int	get_input(t_pipex *px, char **av, char **ep)
 		in_fd = open(in_path, O_RDONLY);
 		free(in_path);
 		if (in_fd == -1)
-			ft_exit(INPUT_ERR);
+			ft_exit(INPUT_ERR, av[1]);
 	}
 	return (in_fd);
 }
@@ -98,7 +98,7 @@ int	here_doc(char **av)
 
 	tmp_fd = open(".heredoc_tmp", O_CREAT | O_RDWR | O_APPEND, 00664);
 	if (tmp_fd < 0)
-		ft_exit(HEREDOC_ERR);
+		ft_exit(HEREDOC_ERR, NULL);
 	ft_putstr_fd("heredoc> ", 1);
 	line = get_next_line(STDIN_FILENO);
 	trim_line = ft_strtrim(line, "\n");

@@ -12,25 +12,45 @@
 
 #include "pipex.h"
 
-void	exit_fail(t_codes err)
+static void	put_error(char *str, char *error_str, int flag);
+
+void	exit_fail(t_codes err, char *str)
 {
 	if (err == ERR_USAGE)
 		ft_putstr_fd("Usage: ./pipex input_file cmd1 cmd2 output_file\n", 2);
 	else if (err == ERR_PIPE)
-		ft_putstr_fd("Pipe failed\n", 2);
+		put_error("pipe fail", strerror(errno), 1);
 	else if (err == ERR_FORK)
-		ft_putstr_fd("Fork failed\n", 2);
-	else if (err == ERR_INPUT)
-		ft_putstr_fd("Invalid input file\n", 2);
-	else if (err == ERR_OUTPUT)
-		ft_putstr_fd("Output file doesn't exist/couldn't be created\n", 2);
+		put_error("fork fail", strerror(errno), 1);
+	else if (err == ERR_INPUT || err == ERR_OUTPUT)
+		put_error(str, strerror(errno), 0);
 	else if (err == EXEC_FAIL)
 		ft_putstr_fd("Execution failed\n", 2);
 	else if (err == CMD_NA)
-		ft_putstr_fd("Couldn't find command\n", 2);
+		put_error(str, strerror(errno), 1);
 	if (err == CMD_NA)
 		exit(127);
 	exit(1);
+}
+
+static void	put_error(char *str, char *error_str, int flag)
+{
+	if (flag == 0)
+	{
+		ft_putstr_fd("bash: ", 2);
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(error_str, 2);
+		ft_putstr_fd("\n", 2);
+	}
+	else if (flag == 1)
+	{
+		ft_putstr_fd("'", 2);
+		ft_putstr_fd(str, 2);
+		ft_putstr_fd("'", 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd("command not found\n", 2);
+	}
 }
 
 char	*get_path(char *av_cmd, char **ep)
@@ -56,7 +76,7 @@ char	*get_path(char *av_cmd, char **ep)
 	}
 	ft_free_tab(cmd);
 	ft_free_tab(paths);
-	exit_fail(CMD_NA);
+	exit_fail(CMD_NA, NULL);
 	return (NULL);
 }
 

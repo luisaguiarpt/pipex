@@ -20,18 +20,18 @@ int	main(int ac, char **av, char **ep)
 	int	status2;
 
 	if (ac != 5)
-		exit_fail(ERR_USAGE);
+		exit_fail(ERR_USAGE, NULL);
 	if (pipe(fd) == -1)
-		exit_fail(ERR_PIPE);
+		exit_fail(ERR_PIPE, NULL);
 	pid1 = fork();
 	if (pid1 == -1)
-		exit_fail(ERR_FORK);
+		exit_fail(ERR_FORK, NULL);
 	if (pid1 == 0)
 		cmd1(av, ep, fd);
 	close(fd[1]);
 	pid2 = fork();
 	if (pid2 == -1)
-		exit_fail(ERR_FORK);
+		exit_fail(ERR_FORK, NULL);
 	if (pid2 == 0)
 		cmd2(av, ep, fd);
 	close(fd[0]);
@@ -47,12 +47,12 @@ void	cmd1(char **av, char **ep, int fd[2])
 	char	*in_path;
 
 	if (!ft_strlen(av[2]))
-		exit_fail(CMD_NA);
+		exit_fail(CMD_NA, av[1]);
 	in_path = ft_strjoin2(ft_strjoin(get_ep("PWD=", ep), "/"), av[1], 0);
 	in_fd = open(in_path, O_RDONLY);
 	free(in_path);
 	if (in_fd == -1)
-		exit_fail(ERR_INPUT);
+		exit_fail(ERR_INPUT, av[1]);
 	close(fd[0]);
 	dup2(in_fd, STDIN_FILENO);
 	close(in_fd);
@@ -67,12 +67,12 @@ void	cmd2(char **av, char **ep, int fd[2])
 	char	*out_path;
 
 	if (!ft_strlen(av[3]))
-		exit_fail(CMD_NA);
+		exit_fail(CMD_NA, av[3]);
 	out_path = ft_strjoin2(ft_strjoin(get_ep("PWD=", ep), "/"), av[4], 0);
 	out_fd = open(out_path, O_WRONLY | O_CREAT | O_TRUNC, 00664);
 	free(out_path);
 	if (out_fd == -1)
-		exit_fail(ERR_INPUT);
+		exit_fail(ERR_INPUT, av[3]);
 	dup2(fd[0], STDIN_FILENO);
 	close(fd[0]);
 	dup2(out_fd, STDOUT_FILENO);
@@ -91,6 +91,6 @@ void	exec_cmd(char *av_cmd, char **ep)
 	{
 		ft_free_tab(cmds);
 		free(cmd_path);
-		exit_fail(EXEC_FAIL);
+		exit_fail(EXEC_FAIL, NULL);
 	}
 }

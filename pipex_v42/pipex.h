@@ -20,6 +20,8 @@
 # include <stdlib.h>		// malloc, exit
 # include <stdio.h>		// perror
 # include <sys/wait.h>	// wait
+# include <string.h>	// strerror 
+# include <errno.h>	//	errno
 
 typedef struct s_pipex
 {
@@ -43,6 +45,6 @@ void	cmd1(char **av, char **ep, int fd[2]);
 void	cmd2(char **av, char **ep, int fd[2]);
 char	*get_path(char *av_cmd, char **ep);
 char	*get_ep(char *var, char **ep);
-void	exit_fail(t_codes err);
+void	exit_fail(t_codes err, char *str);
 
 #endif
