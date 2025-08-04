@@ -91,6 +91,6 @@ void	exec_cmd(char *av_cmd, char **ep)
 	{
 		ft_free_tab(cmds);
 		free(cmd_path);
-		exit_fail(EXEC_FAIL, NULL);
+		exit_fail(EXEC_FAIL, av_cmd);
 	}
 }

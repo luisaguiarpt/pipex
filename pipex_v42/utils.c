@@ -76,7 +76,7 @@ char	*get_path(char *av_cmd, char **ep)
 	}
 	ft_free_tab(cmd);
 	ft_free_tab(paths);
-	exit_fail(CMD_NA, NULL);
+	exit_fail(CMD_NA, av_cmd);
 	return (NULL);
 }
 
